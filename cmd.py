@@ -41,7 +41,7 @@ stage = {
 # button area
 # button function description
 button = {
-    GA2SC : (calculateWH([680, 70, 700, 90]), "Go to the splash screen")
+    GA2SC : (calculateWH([1080, 168, 1105, 191]), "Go to the splash screen")
 }
 
 
@@ -63,11 +63,10 @@ def generateClickDelay():
 
 def initalizeCmd(shape):
     #python 37 issue in conda
-    APP_START_TS = time.monotonic_ns() * 1000
-
-    print('The current pointer position is {} The App x,y:{}, {} : {}, {}'.format(str(ctrl.position), Winfo.x0, Winfo.y0, Winfo.w, Winfo.h))
+    APP_START_TS = time.monotonic_ns() / 1000
+    print("app starts @ {} ms", APP_START_TS)
+    print('The current pointer position is {} The App x,y:{}, {}, width,height : {}, {}'.format(str(ctrl.position), Winfo.x0, Winfo.y0, Winfo.w, Winfo.h))
     ctrl.position = (Winfo.x0, Winfo.y0)
-    print(APP_START_TS)
     return
 
 def CursorClickAt(x, y):
@@ -75,6 +74,7 @@ def CursorClickAt(x, y):
     ctrl.position = (Winfo.x0 + x, Winfo.y0 + y)
     ctrl.press(Button.left)
     ctrl.release(Button.left)
+
 def HeartbeatMain():
     print("main thread r u n n i n g ...")
 
@@ -112,7 +112,6 @@ def onMouseScrolling(x, y, dx, dy):
     pass
 
 # Collecting events until released
-
 def StartMouseListener():
     with mouse.Listener(
             #on_move=onMouseMoving,

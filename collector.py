@@ -19,7 +19,7 @@ APP_PATH = "path"
 APP_VSBL = "visible"
 APP_NAME = "name"
 # https://bytes.com/topic/python/answers/576924-win32ui-vs-wxpy-screen-capture-multi-monitor
-str_sumulator_title_key = "MuMu"
+str_sumulator_title_key = "阴阳师"
 #str_sumulator_title_key = "Calculator"
 
 mumu_window = {}
@@ -28,23 +28,33 @@ def enumerateWindows(hwnd, windowInfo):
     str_root_title = win32gui.GetWindowText(hwnd) # the root proc title
     if len(str_root_title) <= 0:
         return
-    rectangle = win32gui.GetWindowRect(hwnd) 
-
+    rectangle = win32gui.GetWindowRect(hwnd)
+    #print(">>>> ",str_root_title)
     if len(str_root_title) > 4 and str_sumulator_title_key in str_root_title:
+        print("Found the YYS")
         mumu_window[APP_HWND] = hwnd
         mumu_window[APP_TITLE] = str_root_title
         mumu_window[APP_RECT] = rectangle # Trying to deprecated
         mumu_window[APP_VSBL] = is_visible
         mumu_window[APP_NAME] = getAppName(hwnd)
         mumu_window[APP_PATH] = getAppPath(hwnd)
-        print(hwnd)
+        #x0 = mumu_window[APP_RECT][0]
+        #y0 = mumu_window[APP_RECT][1]
+        #x1 = mumu_window[APP_RECT][2]
+        #y1 = mumu_window[APP_RECT][3]
+        #width = x1 - x0
+        #height = y1 - y0
+        #print(">>>>", width, height)
+        #mumu_window[APP_O] = [x0, y0, x1, y1, width, height]
+        SetWindowInfo()
+        print("HWND: ", hwnd)
         print(str_root_title)
-        print(mumu_window[APP_NAME])
-        print(mumu_window[APP_PATH])
-        print(mumu_window[APP_RECT])
+        print("App name: ", mumu_window[APP_NAME])
+        print("App path: ", mumu_window[APP_PATH])
+        print("App rect: ", mumu_window[APP_RECT])
 
-        
-        print("Setting focus to " + str(mumu_window["path"]) + " : " + str(win32gui.SetForegroundWindow(hwnd)))
+        if mumu_window[APP_PATH]:
+            print("Setting focus to " + str(mumu_window["path"]) + " : " + str(win32gui.SetForegroundWindow(hwnd)))
         print("-------------------------------------------")
         return True
 
@@ -73,13 +83,7 @@ def getAppName(hwnd):
     else:
         return ret_name
 
-# [TODO] currently it does not handle window move, using hwnd to get window frame position will be ideal
-def GetFrame():
-    wDC = win32gui.GetWindowDC(mumu_window[APP_HWND])
-    dcObj =win32ui.CreateDCFromHandle(wDC)
-    cDC = dcObj.CreateCompatibleDC()
-    dataBitMap  = win32ui.CreateBitmap()
- 
+def SetWindowInfo():
     Winfo.x0 = mumu_window[APP_RECT][0]
     Winfo.y0 = mumu_window[APP_RECT][1]
     Winfo.x1 = mumu_window[APP_RECT][2]
@@ -88,6 +92,15 @@ def GetFrame():
     Winfo.h = Winfo.y1 - Winfo.y0
     mumu_window[APP_O] = [Winfo.x0, Winfo.y0, Winfo.x1, Winfo.y1, Winfo.w, Winfo.h]
     PrintWinfo()
+
+# [TODO] currently it does not handle window move, using hwnd to get window frame position will be ideal
+def GetFrame():
+    wDC = win32gui.GetWindowDC(mumu_window[APP_HWND])
+    dcObj =win32ui.CreateDCFromHandle(wDC)
+    cDC = dcObj.CreateCompatibleDC()
+    dataBitMap  = win32ui.CreateBitmap()
+ 
+    SetWindowInfo()
     dataBitMap.CreateCompatibleBitmap(dcObj, Winfo.w, Winfo.h)
     cDC.SelectObject(dataBitMap)
     cDC.BitBlt((0,0),(Winfo.w, Winfo.h) , dcObj, (0,0), win32con.SRCCOPY)

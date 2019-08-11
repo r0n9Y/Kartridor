@@ -10,5 +10,6 @@ status, window_info = initalizeCollector()
 if status:
     shape = window_info[collector.APP_O]
     cmd.initalizeCmd(shape)
+    GetFrame()
     cmd.Go()
     cmd.StartMouseListener()
